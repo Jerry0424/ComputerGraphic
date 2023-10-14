@@ -7,13 +7,79 @@ public void CGLine(float x1,float y1,float x2,float y2){
     //Utilize the function drawPoint(x, y, color) to apply color to the pixel at coordinates (x, y).
     //For instance: drawPoint(0, 0, color(255, 0, 0)); signifies drawing a red point at (0, 0).   
        
-    /*
-    stroke(0);
-    noFill();
-    line(x1,y1,x2,y2);
-    */
-         
     
+   //stroke(0);
+   // noFill();
+   //line(x1,y1,x2,y2);
+      int flag;
+      if(x1 == x2){
+        flag = 0;
+      }
+      else if(y1 == y2){
+        flag = 1;
+      }
+      else if(x1 < x2 && y1 != y2){
+        flag = 2;
+      }
+      else{
+        flag = 3;
+      }
+      
+      float m , bias, x, y;
+      switch(flag){
+        case 0:
+          if(y1 > y2){
+            while(y1 != y2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              y1 -= 1;
+            }
+          }else{
+          while(y1 != y2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              y1 += 1;
+            }
+          }
+          break;
+        case 1:
+        if(x1 > x2){
+            while(x1 != x2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              x1 -= 1;
+            }
+          }else{
+          while(x1 != x2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              x1 += 1;
+            }
+          }
+          break;
+        case 2:
+        m = (y2 - y1) / (x2 - x1);
+        bias = y1  - m * x1;
+        y = y1;
+        x = x1;
+        while(x != x2){
+          drawPoint(x, y, color(255, 0, 0));
+          x = x + 1;
+          y = x * m + bias;
+        }
+          break;
+        case 3:
+        m = (y2 - y1) / (x2 - x1);
+        bias = y1  - m * x1;
+        y = y1;
+        x = x1;
+        while(x != x2){
+          drawPoint(x, y, color(255, 0, 0));
+          x = x - 1;
+          y = x * m + bias;
+        }
+          break;
+        default:
+          break;
+      }
+      
+      
 }
 
 
