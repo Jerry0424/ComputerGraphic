@@ -97,6 +97,11 @@ public void CGCircle(float x,float y,float r){
     noFill();
     circle(x,y,r*2);
     */  
+    for(float i = -r; i<= r ; i++){
+       float j =(float) Math.round( Math.sqrt(r * r - i * i));
+       drawPoint(x + i, y + j, color(255, 0, 0));
+       drawPoint(x + i, y - j, color(255, 0, 0));
+    }
 }
 
 public void CGEllipse(float x,float y,float r1,float r2){
@@ -113,7 +118,11 @@ public void CGEllipse(float x,float y,float r1,float r2){
     noFill();
     ellipse(x,y,r1*2,r2*2);
     */
-      
+   for (float t = 0; t < 2 * Math.PI; t += 0.001) {
+            float x_b = (float) (r1 * Math.cos(t));
+            float y_b = (float) (r2 * Math.sin(t));
+            drawPoint(x + x_b, y + y_b, color(255, 0, 0));
+        }
 }
 
 public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
@@ -130,6 +139,8 @@ public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
     noFill();
     bezier(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
     */
+    
+    
 }
 
 public void CGEraser(Vector3 p1,Vector3 p2){
