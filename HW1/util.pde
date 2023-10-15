@@ -7,13 +7,103 @@ public void CGLine(float x1,float y1,float x2,float y2){
     //Utilize the function drawPoint(x, y, color) to apply color to the pixel at coordinates (x, y).
     //For instance: drawPoint(0, 0, color(255, 0, 0)); signifies drawing a red point at (0, 0).   
        
-    /*
-    stroke(0);
-    noFill();
-    line(x1,y1,x2,y2);
-    */
-         
     
+   //stroke(0);
+   // noFill();
+   //line(x1,y1,x2,y2);
+   
+   // trandition 
+   /*
+      int flag;
+      if(x1 == x2){
+        flag = 0;
+      }
+      else if(y1 == y2){
+        flag = 1;
+      }
+      else if(x1 < x2 && y1 != y2){
+        flag = 2;
+      }
+      else{
+        flag = 3;
+      }
+      
+      float m , bias, x, y;
+      switch(flag){
+        case 0:
+          if(y1 > y2){
+            while(y1 != y2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              y1 -= 1;
+            }
+          }else{
+          while(y1 != y2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              y1 += 1;
+            }
+          }
+          break;
+        case 1:
+        if(x1 > x2){
+            while(x1 != x2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              x1 -= 1;
+            }
+          }else{
+          while(x1 != x2){
+              drawPoint(x1, y1, color(255, 0, 0));
+              x1 += 1;
+            }
+          }
+          break;
+        case 2:
+        m = (y2 - y1) / (x2 - x1);
+        bias = y1  - m * x1;
+        y = y1;
+        x = x1;
+        while(x != x2){
+          drawPoint(x, y, color(255, 0, 0));
+          x = x + 1;
+          y = x * m + bias;
+        }
+          break;
+        case 3:
+        m = (y2 - y1) / (x2 - x1);
+        bias = y1  - m * x1;
+        y = y1;
+        x = x1;
+        while(x != x2){
+          drawPoint(x, y, color(255, 0, 0));
+          x = x - 1;
+          y = x * m + bias;
+        }
+          break;
+        default:
+          break;
+      }
+      */
+      
+      //Bresenham
+      
+      float dx = Math.abs(x2 - x1);
+      float dy = Math.abs(y2 - y1);
+      float sx = (x1 < x2) ? 1 : -1;
+      float sy = (y1 < y2) ? 1 : -1;
+      float p = dx - dy;
+      float p2;
+      while(!(x1 == x2 && y1 == y2)){
+        
+        drawPoint(x1, y1, color(255, 0, 0));
+        p2 = 2 * p;
+        if (p2 > -dy) {
+                p = p - dy;
+                x1 = x1 + sx;
+            }
+            if (p2 < dx) {
+                p = p + dx;
+                y1 = y1 + sy;
+            }
+      }
 }
 
 
@@ -31,6 +121,11 @@ public void CGCircle(float x,float y,float r){
     noFill();
     circle(x,y,r*2);
     */  
+    for(float i = -r; i<= r ; i += 0.015){
+       float j =(float) Math.sqrt(r * r - i * i);
+       drawPoint(x + i, y + j, color(255, 0, 0));
+       drawPoint(x + i, y - j, color(255, 0, 0));
+    }
 }
 
 public void CGEllipse(float x,float y,float r1,float r2){
@@ -47,7 +142,11 @@ public void CGEllipse(float x,float y,float r1,float r2){
     noFill();
     ellipse(x,y,r1*2,r2*2);
     */
-      
+   for (float t = 0; t < 2 * Math.PI; t += 0.001) {
+            float x_b = (float) (r1 * Math.cos(t));
+            float y_b = (float) (r2 * Math.sin(t));
+            drawPoint(x + x_b, y + y_b, color(255, 0, 0));
+        }
 }
 
 public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
@@ -64,6 +163,15 @@ public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
     noFill();
     bezier(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
     */
+    // control point  p2 , p3 
+    // start p1 
+    // end p4
+    for (float i = 0; i <= 1; i += 0.001) {
+          float j = 1 - i;
+          float x = j * j * j * p1.x + 3 * j * j * i * p2.x + 3 * j * i * i * p3.x + i * i * i * p4.x;
+          float y = j * j * j * p1.y + 3 * j * j * i * p2.y + 3 * j * i * i * p3.y + i * i * i * p4.y;
+          drawPoint(x, y, color(255, 0, 0));
+    }
 }
 
 public void CGEraser(Vector3 p1,Vector3 p2){
@@ -79,8 +187,13 @@ public void CGEraser(Vector3 p1,Vector3 p2){
     //Utilize the function drawPoint(x, y, color) to apply color to the pixel at coordinates (x, y).
     //For instance: drawPoint(0, 0, color(255, 0, 0)); signifies drawing a red point at (0, 0). 
     //drawPoint(0,0,color(250));
-    
-
+    float w = p2.x - p1.x;
+    float h = p2.y - p1.y;
+    for (float i = 0; i < h; i+=0.5) {
+      for (float j = 0; j < w; j+=0.5) {
+          drawPoint(p1.x + j, p1.y + i, color(250));
+      }
+    }
 }
 
 public void drawPoint(float x,float y,color c){
