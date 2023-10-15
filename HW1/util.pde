@@ -97,10 +97,11 @@ public void CGCircle(float x,float y,float r){
     noFill();
     circle(x,y,r*2);
     */  
-    for(float i = -r; i<= r ; i++){
-       float j =(float) Math.round( Math.sqrt(r * r - i * i));
+    for(float i = -r; i<= r ;){
+       float j =(float) Math.sqrt(r * r - i * i);
        drawPoint(x + i, y + j, color(255, 0, 0));
        drawPoint(x + i, y - j, color(255, 0, 0));
+       i = i + 0.05;
     }
 }
 
@@ -139,8 +140,15 @@ public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
     noFill();
     bezier(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
     */
-    
-    
+    // control point  p2 , p3 
+    // start p1 
+    // end p4
+    for (float t = 0; t <= 1; t += 0.001) {
+          float u = 1 - t;
+          float x = u * u * u * p1.x + 3 * u * u * t * p2.x + 3 * u * t * t * p3.x + t * t * t * p4.x;
+          float y = u * u * u * p1.y + 3 * u * u * t * p2.y + 3 * u * t * t * p3.y + t * t * t * p4.y;
+          drawPoint(x, y, color(255, 0, 0));
+    }
 }
 
 public void CGEraser(Vector3 p1,Vector3 p2){
