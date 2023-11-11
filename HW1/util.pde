@@ -1,4 +1,4 @@
-public void CGLine(float x1,float y1,float x2,float y2){
+public void CGLine(float x1,float y1,float x2,float y2, color applyColor){
     //To-Do: You need to implement the "line algorithm" in this section. 
     //You can use the function line(x1, y1, x2, y2); to verify the correct answer. 
     //However, remember to comment out the function before you submit your homework. 
@@ -93,7 +93,7 @@ public void CGLine(float x1,float y1,float x2,float y2){
       float p2;
       while(!(x1 == x2 && y1 == y2)){
         
-        drawPoint(x1, y1, color(255, 0, 0));
+        drawPoint(x1, y1, applyColor);
         p2 = 2 * p;
         if (p2 > -dy) {
                 p = p - dy;
@@ -107,7 +107,7 @@ public void CGLine(float x1,float y1,float x2,float y2){
 }
 
 
-public void CGCircle(float x,float y,float r){
+public void CGCircle(float x,float y,float r, color applyColor){
     //To-Do: You need to implement the "circle algorithm" in this section. 
     //You can use the function circle(x, y, r); to verify the correct answer. 
     //However, remember to comment out the function before you submit your homework. 
@@ -121,14 +121,14 @@ public void CGCircle(float x,float y,float r){
     noFill();
     circle(x,y,r*2);
     */  
-    for(float i = -r; i<= r ; i += 0.015){
+    for(float i = -r; i<= r ; i += 0.018){
        float j =(float) Math.sqrt(r * r - i * i);
-       drawPoint(x + i, y + j, color(255, 0, 0));
-       drawPoint(x + i, y - j, color(255, 0, 0));
+       drawPoint(x + i, y + j, applyColor);
+       drawPoint(x + i, y - j, applyColor);
     }
 }
 
-public void CGEllipse(float x,float y,float r1,float r2){
+public void CGEllipse(float x,float y,float r1,float r2, color applyColor){
     //To-Do: You need to implement the "ellipse algorithm" in this section. 
     //You can use the function ellipse(x, y, r1,r2); to verify the correct answer. 
     //However, remember to comment out the function before you submit your homework. 
@@ -145,11 +145,11 @@ public void CGEllipse(float x,float y,float r1,float r2){
    for (float t = 0; t < 2 * Math.PI; t += 0.001) {
             float x_b = (float) (r1 * Math.cos(t));
             float y_b = (float) (r2 * Math.sin(t));
-            drawPoint(x + x_b, y + y_b, color(255, 0, 0));
+            drawPoint(x + x_b, y + y_b, applyColor);
         }
 }
 
-public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
+public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4, color applyColor){
     //To-Do: You need to implement the "bezier curve algorithm" in this section. 
     //You can use the function bezier(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); to verify the correct answer. 
     //However, remember to comment out the function before you submit your homework. 
@@ -170,7 +170,7 @@ public void CGCurve(Vector3 p1,Vector3 p2,Vector3 p3,Vector3 p4){
           float j = 1 - i;
           float x = j * j * j * p1.x + 3 * j * j * i * p2.x + 3 * j * i * i * p3.x + i * i * i * p4.x;
           float y = j * j * j * p1.y + 3 * j * j * i * p2.y + 3 * j * i * i * p3.y + i * i * i * p4.y;
-          drawPoint(x, y, color(255, 0, 0));
+          drawPoint(x, y, applyColor);
     }
 }
 

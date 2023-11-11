@@ -5,6 +5,16 @@ ShapeButton ellipseButton;
 ShapeButton curveButton;
 ShapeButton pencilButton;
 ShapeButton eraserButton;
+ShapeButton mizuColor;
+ShapeButton kohakuColor;
+ShapeButton kihadaColor;
+ShapeButton karachaColor;
+ShapeButton redColor;
+ShapeButton blueColor;
+ShapeButton greenColor;
+ShapeButton blackColor;
+
+color setColor;
 
 Button clearButton;
 
@@ -55,7 +65,7 @@ public void initButton(){
       }      
       @Override
       public Renderer getRendererType(){
-          return new LineRenderer();
+          return new LineRenderer(setColor);
       }
   };
   
@@ -71,7 +81,7 @@ public void initButton(){
       }
       @Override
       public Renderer getRendererType(){
-          return new CircleRenderer();
+          return new CircleRenderer(setColor);
       }
   };
   circleButton.setBoxAndClickColor(color(250),color(150));
@@ -89,7 +99,7 @@ public void initButton(){
       }
       @Override
       public Renderer getRendererType(){
-          return new PolygonRenderer();
+          return new PolygonRenderer(setColor);
       }
       
   };
@@ -107,7 +117,7 @@ public void initButton(){
       }
       @Override
       public Renderer getRendererType(){
-          return new EllipseRenderer();
+          return new EllipseRenderer(setColor);
       }
       
   };
@@ -124,7 +134,7 @@ public void initButton(){
       }
       @Override
       public Renderer getRendererType(){
-          return new CurveRenderer();
+          return new CurveRenderer(setColor);
       }
       
   };
@@ -139,7 +149,7 @@ public void initButton(){
   pencilButton = new ShapeButton(185,10,30,30){
       @Override
       public Renderer getRendererType(){
-          return new PencilRenderer();
+          return new PencilRenderer(setColor);
       }    
   };
   pencilButton.setImage(loadImage("pencil.png"));
@@ -158,8 +168,109 @@ public void initButton(){
   eraserButton.setBoxAndClickColor(color(250),color(150));
   shapeButton.add(eraserButton);
   
-
+  
+  mizuColor = new ShapeButton(260,10,20,20){
+      @Override
+      public Renderer getRendererType(){
+          setColor = color(129, 199, 212);
+          return new colorRenderer();
+      }
+  };
+  mizuColor.setImage(loadImage("mizu.png"));
+  
+  mizuColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(mizuColor);
+  
+  kohakuColor = new ShapeButton(290,10,20,20){
+      @Override
+      public Renderer getRendererType(){
+          setColor = color(202, 122, 44);
+          return new colorRenderer();
+      }
+  };
+  kohakuColor.setImage(loadImage("kohaku.png"));
+  
+  kohakuColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(kohakuColor);
+  
+  
+  kihadaColor = new ShapeButton(320,10,20,20){
+    @Override
+    public Renderer getRendererType(){
+        setColor = color(251, 226, 81);
+        return new colorRenderer();
+    }
+  };
+  kihadaColor.setImage(loadImage("kihada.png"));
+  
+  kihadaColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(kihadaColor);
+  
+  karachaColor = new ShapeButton(350,10,20,20){
+      @Override
+      public Renderer getRendererType(){
+          setColor = color(180, 113, 87);
+          return new colorRenderer();
+      }
+  };
+  karachaColor.setImage(loadImage("karacha.png"));
+  
+  karachaColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(karachaColor);
+  
+  
+   blueColor = new ShapeButton(380,10,20,20){
+      @Override
+      public Renderer getRendererType(){
+          setColor = color(0, 0, 255);
+          return new colorRenderer();
+      }
+  };
+  blueColor.setImage(loadImage("blue.png"));
+  
+  blueColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(blueColor);
+  
+  greenColor = new ShapeButton(410,10,20,20){
+      @Override
+      public Renderer getRendererType(){
+          setColor = color(0, 255, 0);
+          return new colorRenderer();
+      }
+  };
+  greenColor.setImage(loadImage("green.png"));
+  
+  greenColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(greenColor);
+  
+  
+  redColor = new ShapeButton(440,10,20,20){
+    @Override
+    public Renderer getRendererType(){
+        setColor = color(255, 0, 0);
+        return new colorRenderer();
+    }
+  };
+  redColor.setImage(loadImage("red.png"));
+  
+  redColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(redColor);
+  
+  blackColor = new ShapeButton(470,10,20,20){
+      @Override
+      public Renderer getRendererType(){
+          setColor = color(0, 0, 0);
+          return new colorRenderer();
+      }
+  };
+  blackColor.setImage(loadImage("black.png"));
+  
+  blackColor.setBoxAndClickColor(color(250),color(150));
+  shapeButton.add(blackColor);
+  
 }
+
+
 
 public void keyPressed(){
     if(key=='z'||key=='Z'){
