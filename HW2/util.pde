@@ -1,7 +1,39 @@
 public void CGLine(float x1,float y1,float x2,float y2){
     //To-Do: Please paste your code from HW1 CGLine.
+    float dx = abs(x2-x1);
+    float dy = abs(y2-y1);
+    float s1,s2;
+    if (x2-x1 > 0)  s1 = -1;
+    else  s1 = 1;
+    if (y2-y1 > 0)  s2 = -1;
+    else  s2 = 1;
+    float x = x2;
+    float y = y2;
+    boolean change;
     
+    if(dy>dx)
+    {
+      float temp = dx;
+      dx = dy;
+      dy = temp;
+      change = true;
+    }
+    else  change = false;
     
+    float p = 2*dy-dx;
+    for(float i=0;i<=dx;i++)
+    {
+      drawPoint(x, y, color(0,0,0));
+      if(p >= 0)
+      {
+        if(change)  x = x + s1;
+        else  y = y + s2;
+        p = p - 2 * dx;
+      }
+      if(change)  y = y + s2;
+      else  x = x + s1;
+      p = p + 2 * dy;
+    }
 }
 public boolean outOfBoundary(float x,float y){
     if(x < 0 || x >= width || y < 0 || y >= height) return true;

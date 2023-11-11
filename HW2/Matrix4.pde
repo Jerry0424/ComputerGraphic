@@ -34,8 +34,6 @@ static class Matrix4{
   void makeRotX(float a) {
     // To-Do
     // You need to implement the rotation of x-axis matrix here.
-    
-    
     makeIdentity();
   }
   void makeRotY(float a) {
@@ -47,19 +45,31 @@ static class Matrix4{
      // To-Do
      // You need to implement the rotation of z-axis matrix here.
     makeIdentity();
-
+    /*
+    | cos(a)  -sin(a)  0  0 |
+    | sin(a)   cos(a)  0  0 |
+    |   0        0     1  0 |
+    |   0        0     0  1 |
+    */
+    m[0] = (float) Math.cos(a);
+    m[1] = -(float) Math.sin(a);
+    m[4] = (float) Math.sin(a);
+    m[5] = (float) Math.cos(a);
   }
   
   void makeTrans(Vector3 t) {
     // To-Do
     // You need to implement the translate matrix here.
     makeIdentity();
-    
+    m[3]  = t.x;
+    m[7]  = t.y;
   }
   void makeScale(Vector3 s) {
     // To-Do
     // You need to implement the scale matrix here.
     makeIdentity();
+    m[0] = s.x;
+    m[5] = s.y;
   }
   
   void makeMirror(){
