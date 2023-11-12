@@ -57,7 +57,13 @@ boolean pnpoly(float x, float y, Vector3[] vertexes) {
   // To-Do : You need to check the coordinate p(x,v) if inside the vertexes. If yes return true.
     
   boolean c=false;
-
+int n = vertexes.length;
+    for (int i = 0, j = n - 1; i < n; j = i++) {
+        if (((vertexes[i].y > y) != (vertexes[j].y > y)) &&
+            (x < (vertexes[j].x - vertexes[i].x) * (y - vertexes[i].y) / (vertexes[j].y - vertexes[i].y) + vertexes[i].x)) {
+            c = !c;
+        }
+    }
     
   return c;
 }
@@ -72,7 +78,17 @@ public Vector3[] findBoundBox(Vector3[] v) {
    //       |  /  \ |
    //       | /____\|
    //        ------- r2
-    
+    for (Vector3 vertex : v) {
+        // 更新最小頂點座標
+        if (vertex.x < recordminV.x) recordminV.x = vertex.x;
+        if (vertex.y < recordminV.y) recordminV.y = vertex.y;
+        if (vertex.z < recordminV.z) recordminV.z = vertex.z;
+
+        // 更新最大頂點座標
+        if (vertex.x > recordmaxV.x) recordmaxV.x = vertex.x;
+        if (vertex.y > recordmaxV.y) recordmaxV.y = vertex.y;
+        if (vertex.z > recordmaxV.z) recordmaxV.z = vertex.z;
+    }
 
     Vector3[] result={recordminV, recordmaxV};
     return result;
