@@ -1,40 +1,38 @@
-public void CGLine(float x1,float y1,float x2,float y2){
-    //To-Do: Please paste your code from HW1 CGLine.
-    float dx = abs(x2-x1);
-    float dy = abs(y2-y1);
-    float s1,s2;
-    if (x2-x1 > 0)  s1 = -1;
-    else  s1 = 1;
-    if (y2-y1 > 0)  s2 = -1;
-    else  s2 = 1;
-    float x = x2;
-    float y = y2;
-    boolean change;
-    
-    if(dy>dx)
-    {
-      float temp = dx;
-      dx = dy;
-      dy = temp;
-      change = true;
+public void CGLine(float x1, float y1, float x2, float y2) {
+    int dx = Math.abs((int)x2 - (int)x1);
+    int dy = Math.abs((int)y2 - (int)y1);
+    int s1 = (x2 - x1 > 0) ? -1 : 1;
+    int s2 = (y2 - y1 > 0) ? -1 : 1;
+    int x = (int)x2;
+    int y = (int)y2;
+    boolean change = dy > dx;
+
+    if (change) {
+        int temp = dx;
+        dx = dy;
+        dy = temp;
     }
-    else  change = false;
-    
-    float p = 2*dy-dx;
-    for(float i=0;i<=dx;i++)
-    {
-      drawPoint(x, y, color(0,0,0));
-      if(p >= 0)
-      {
-        if(change)  x = x + s1;
-        else  y = y + s2;
-        p = p - 2 * dx;
-      }
-      if(change)  y = y + s2;
-      else  x = x + s1;
-      p = p + 2 * dy;
+
+    int p = 2 * dy - dx;
+    for (int i = 0; i <= dx; i++) {
+        drawPoint(x, y, color(0, 0, 0));
+        if (p >= 0) {
+            if (change) {
+                x += s1;
+            } else {
+                y += s2;
+            }
+            p -= 2 * dx;
+        }
+        if (change) {
+            y += s2;
+        } else {
+            x += s1;
+        }
+        p += 2 * dy;
     }
 }
+
 public boolean outOfBoundary(float x,float y){
     if(x < 0 || x >= width || y < 0 || y >= height) return true;
     return false;
@@ -96,6 +94,7 @@ public Vector3[] findBoundBox(Vector3[] v) {
 }
 
 
+
 public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points,Vector3[] boundary){
     ArrayList<Vector3> input=new ArrayList<Vector3>();
     ArrayList<Vector3> output=new ArrayList<Vector3>();
@@ -108,48 +107,43 @@ public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points,Vector3[] boundar
     // The function you pass 2 parameter. One is the vertexes of the shape "points".
     // And the other is the vertexes of the "boundary".
     // The output is the vertexes of the polygon.
+    //System.out.print( boundary[0]);
+    //System.out.print( '\n');
+    //System.out.print( boundary[1]);
+    //System.out.print( '\n');
+    //System.out.print( boundary[2]);
+    //System.out.print( '\n');
+    //System.out.print( boundary[3]);
+    //System.out.print( '\n');
     
     for(int i = 0; i < boundary.length; i++){
       Vector3 boundaryEdgeStart = boundary[i];
       Vector3 boundaryEdgeEnd = boundary[(i + 1) % (boundary.length)];
-    
-      //System.out.print(boundaryEdgeStart);
-      //System.out.print('\n');
-      //System.out.print(boundaryEdgeEnd);
-      //System.out.print('\n');
       
       output.clear();
-      Vector3 previousShapePoint = input.get(input.size() - 1);
-      //System.out.print(previousShapePoint);
-      Vector3 currentShapePoint = input.get(0);
+      
+      Vector3 currentShapePoint;
+      Vector3 nextShapePoint;
+      
       for(int j = 0; j < input.size(); j++){
         currentShapePoint = input.get(j);
+        nextShapePoint = input.get((j + 1) % (input.size()));
         
-        if(isInside(boundaryEdgeStart, boundaryEdgeEnd, currentShapePoint)){
-          if(!isInside(boundaryEdgeStart, boundaryEdgeEnd, previousShapePoint)){
-            Vector3 intersection = computeIntersection(boundaryEdgeStart, boundaryEdgeEnd, previousShapePoint, currentShapePoint);
-            output.add(intersection);
-          }
-          else{
-            output.add(currentShapePoint);
-          }
-        }else if(isInside(boundaryEdgeStart, boundaryEdgeEnd, previousShapePoint)){
-          Vector3 intersection = computeIntersection(boundaryEdgeStart, boundaryEdgeEnd, previousShapePoint, currentShapePoint);
-          output.add(intersection);
+        if(isInside(boundaryEdgeStart, boundaryEdgeEnd, nextShapePoint)){
+         if(!isInside(boundaryEdgeStart, boundaryEdgeEnd, currentShapePoint)){
+           output.add(boundaryIntersection(boundaryEdgeStart, boundaryEdgeEnd, nextShapePoint, currentShapePoint));
+         }
+         output.add(nextShapePoint);
         }
-        previousShapePoint = currentShapePoint;
+        else if (isInside(boundaryEdgeStart, boundaryEdgeEnd, currentShapePoint)){
+          output.add(boundaryIntersection(boundaryEdgeStart, boundaryEdgeEnd, currentShapePoint, nextShapePoint));
+        }
       }
      
-      if(output.isEmpty()){
-        output.addAll(input);
-      }
-      
      input.clear();
      input.addAll(output);
     
     }
-    
-    
     
     Vector3[] result=new Vector3[output.size()];
     for (int i=0; i<result.length; i+=1) {
@@ -158,19 +152,34 @@ public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points,Vector3[] boundar
     return result;
 }
 
-private static boolean isInside(Vector3 edgeStart, Vector3 edgeEnd, Vector3 point) {
-        return ((edgeEnd.x - edgeStart.x) * (point.y - edgeStart.y) -
-                (edgeEnd.y - edgeStart.y) * (point.x - edgeStart.x)) >= 0;
-    }
+private static boolean isInside(Vector3 boundaryEdgeStart, Vector3 boundaryEdgeEnd, Vector3 checkPoint) {
+  // Vector Product to check point position     (a.x *b.y) - (b.x - a.y)  ==>  <  0(left),  > 0 (right)
+  // box   
+  //        ------>
+  //       ^       |
+  //       |       |
+  //       |       |
+  //       |       V 
+  //       <-------
+  
+  float boundaryX =  boundaryEdgeEnd.x - boundaryEdgeStart.x;   // a.x
+  float boundaryY =  boundaryEdgeEnd.y - boundaryEdgeStart.y;   // a.y
+  float pointX =  checkPoint.x - boundaryEdgeStart.x;           // b.x
+  float pointY =  checkPoint.y - boundaryEdgeStart.y;           // b.y
+  
+  return ((boundaryX * pointY) - (boundaryY * pointX) <= 0);    // <= 0 indicate the point is inside the box
+}
 
-private static Vector3 computeIntersection(Vector3 edgeStart, Vector3 edgeEnd, Vector3 insidePoint, Vector3 outsidePoint) {
-    float t = ((edgeEnd.x - edgeStart.x) * (insidePoint.y - edgeStart.y) -
-               (edgeEnd.y - edgeStart.y) * (insidePoint.x - edgeStart.x)) /
-              ((edgeEnd.x - edgeStart.x) * (outsidePoint.y - insidePoint.y) -
-               (edgeEnd.y - edgeStart.y) * (outsidePoint.x - insidePoint.x));
-
-    float intersectionX = insidePoint.x + t * (outsidePoint.x - insidePoint.x);
-    float intersectionY = insidePoint.y + t * (outsidePoint.y - insidePoint.y);
-
-    return new Vector3(intersectionX, intersectionY, 0);
+private static Vector3 boundaryIntersection(Vector3 boundaryEdgeStart, Vector3 boundaryEdgeEnd, Vector3 inside, Vector3 outside) {
+  // compute the  boundary intersection point of boundary edges and edge consist of inside and outside point
+  
+    float x1 = boundaryEdgeStart.x, y1 = boundaryEdgeStart.y;
+    float x2 = boundaryEdgeEnd.x, y2 = boundaryEdgeEnd.y;
+    float x3 = inside.x, y3 = inside.y;
+    float x4 = outside.x, y4 = outside.y;
+    
+    float product = (x1-x2) * (y3-y4) - (y1-y2) * (x3-x4);
+    float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / product;
+    
+    return new Vector3((x1 + t * (x2 - x1)), (y1 + t * (y2 - y1)), 0);
 }
