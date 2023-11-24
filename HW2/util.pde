@@ -53,16 +53,13 @@ public float distance(Vector3 a,Vector3 b){
 
 boolean pnpoly(float x, float y, Vector3[] vertexes) {
   // To-Do : You need to check the coordinate p(x,v) if inside the vertexes. If yes return true.
-    
- boolean c = false;
+ boolean flag = false;
   for (int i = 0, j = vertexes.length - 1; i < vertexes.length; j = i++) {
-    // check vertival line and 
-      if (((vertexes[i].y > y) != (vertexes[j].y > y)) && 
-          (x < (vertexes[j].x - vertexes[i].x) * (y - vertexes[i].y) / (vertexes[j].y - vertexes[i].y) + vertexes[i].x)) {
-          c = !c;
+      if (((vertexes[i].y > y) != (vertexes[j].y > y)) && (x < (vertexes[j].x - vertexes[i].x) * (y - vertexes[i].y) / (vertexes[j].y - vertexes[i].y) + vertexes[i].x)) {
+          flag = !flag;
       }
   }
-  return c;
+  return flag;
 }
 
 public Vector3[] findBoundBox(Vector3[] v) {
@@ -76,12 +73,12 @@ public Vector3[] findBoundBox(Vector3[] v) {
    //       | /____\|
    //        ------- r2
     for (Vector3 vertex : v) {
-        // 更新最小頂點座標
+        // find min vertex coordinate
         if (vertex.x < recordminV.x) recordminV.x = vertex.x;
         if (vertex.y < recordminV.y) recordminV.y = vertex.y;
         if (vertex.z < recordminV.z) recordminV.z = vertex.z;
 
-        // 更新最大頂點座標
+        // find max vertex coordinate
         if (vertex.x > recordmaxV.x) recordmaxV.x = vertex.x;
         if (vertex.y > recordmaxV.y) recordmaxV.y = vertex.y;
         if (vertex.z > recordmaxV.z) recordmaxV.z = vertex.z;
@@ -90,7 +87,6 @@ public Vector3[] findBoundBox(Vector3[] v) {
     Vector3[] result={recordminV, recordmaxV};
     return result;
     
-
 }
 
 
@@ -178,7 +174,7 @@ private static Vector3 boundaryIntersection(Vector3 boundaryEdgeStart, Vector3 b
     float x3 = inside.x, y3 = inside.y;
     float x4 = outside.x, y4 = outside.y;
     
-    float product = (x1-x2) * (y3-y4) - (y1-y2) * (x3-x4);
+    float product = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
     float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / product;
     
     return new Vector3((x1 + t * (x2 - x1)), (y1 + t * (y2 - y1)), 0);
