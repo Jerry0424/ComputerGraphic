@@ -35,27 +35,64 @@ static public class Matrix4{
        // To-Do
     // You need to implement the rotation of x-axis matrix here.
      makeIdentity();
+      /*
+    |   1     0        0     0 |
+    |   0   cos(a)  -sin(a)  0 |
+    |   0   sin(a)   cos(a)  0 |
+    |   0     0       0      1 |
+    */
+    m[5] = (float) Math.cos(a);
+    m[6] = -(float) Math.sin(a);
+    m[9] = (float) Math.sin(a);
+    m[10] = (float) Math.cos(a);
+     
   }
   void makeRotY(float a) {
     // To-Do
     // You need to implement the rotation of y-axis matrix here.
     makeIdentity();
+     /*
+    |  cos(a)   0   sin(a)  0 |
+    |   0       1    0      0 |
+    | -sin(a)   0   cos(a)  0 |
+    |   0       0    0      1 |
+    */
+    m[0] = (float) Math.cos(a);
+    m[2] = (float) Math.sin(a);
+    m[8] = -(float) Math.sin(a);
+    m[10] = (float) Math.cos(a);
   }
   void makeRotZ(float a) {
     // To-Do (HW2)
     // You need to implement the rotation of z-axis matrix here.
+     /*
+    | cos(a)  -sin(a)  0  0 |
+    | sin(a)   cos(a)  0  0 |
+    |   0        0     1  0 |
+    |   0        0     0  1 |
+    */
     makeIdentity();
+    m[0] = (float) Math.cos(a);
+    m[1] = -(float) Math.sin(a);
+    m[4] = (float) Math.sin(a);
+    m[5] = (float) Math.cos(a);
   }
   
   void makeTrans(Vector3 t) {
     // To-Do
     // You need to implement the translate matrix here.
     makeIdentity();
+    m[3]  = t.x;
+    m[7]  = t.y;
+    m[11] = t.z;
   }
   void makeScale(Vector3 s) {
     // To-Do
     // You need to implement the scale matrix here.     
    makeIdentity();
+   m[0] = s.x;
+   m[5] = s.y;
+   m[10] = s.z;
   }
   
   void makeMirror(){
