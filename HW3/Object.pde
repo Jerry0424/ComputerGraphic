@@ -94,7 +94,7 @@ public class GameObject {
         // To - Do 
         // You need to calculate the model Matrix here.
         
-        return Matrix4.Trans(transform.position.mult(1)).mult(Matrix4.RotY(transform.rotation.y)).mult(Matrix4.RotX(transform.rotation.x)).mult(Matrix4.RotZ(transform.rotation.z)).mult(Matrix4.Scale(transform.scale));
+        return Matrix4.Trans(transform.position.mult(1)).mult(Matrix4.RotX(transform.rotation.x)).mult(Matrix4.RotY(transform.rotation.y)).mult(Matrix4.RotZ(transform.rotation.z)).mult(Matrix4.Scale(transform.scale));
        
     }
     

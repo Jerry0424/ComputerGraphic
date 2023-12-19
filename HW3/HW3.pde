@@ -66,6 +66,6 @@ void cameraControl(){
     // You can write your own camera control function here.
     // Use setPositionOrientation(Vector3 position,Vector3 lookat) to modify the ViewMatrix.
     // Hint : Use keyboard event and mouse click event to change the position of the camera.
-
+   
 
 }
