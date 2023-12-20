@@ -44,29 +44,22 @@ public class Camera {
         // the near plane and the far plane of the camera.
         // Where GH_FOV has been declared as a global variable.
         // Finally, pass the result into projection matrix.
-        
         projection = Matrix4.Identity();
+        
         float aspectRatio = (float) wid / hei;
         float fovRadians = (float) Math.toRadians(GH_FOV);
-        float scale = (float) Math.tan(fovRadians / 2.0f) * near;
-    
-        float right = aspectRatio * scale;
-        float left = -right;
-        float top = scale;
-        float bottom = -top;
-    
-        projection.m[0] = (2.0f * near) / (right - left);
-        projection.m[5] = (2.0f * near) / (top - bottom);
-        projection.m[8] = (right + left) / (right - left);
-        projection.m[9] = (top + bottom) / (top - bottom);
-        projection.m[10] = -(far + near) / (far - near);
-        projection.m[11] = -1.0f;
-        projection.m[14] = -(2.0f * far * near) / (far - near);
-        projection.m[15] = 0.0f;
+        float tanScale = (float) Math.tan(fovRadians / 2.0f) * near;
+        float right = aspectRatio * tanScale;
+        float top = tanScale;
 
+        projection.m[0] = (float) near / right;
+        projection.m[5] = (float) near / top ;
+        projection.m[10] = (float) (-1 * (far + near)) / (far - near);
+        projection.m[11] = (float) (- 2 * (far * near)) / (far - near);
+        projection.m[14] = -1.0f;
+        projection.m[15] = 0;
     }
     void setPositionOrientation(Vector3 pos, float rotX, float rotY) {
-       
     }
 
     void setPositionOrientation(Vector3 pos, Vector3 lookat) {
@@ -75,32 +68,36 @@ public class Camera {
         // We uses topVector = (0,1,0) to calculate the eye matrix.
         // Finally, pass the result into worldView matrix.
 
-        // world to eye 
+        // world space to eye space
+        // X : right direction
+        // Y : top direction
+        // Z : view direction
         worldView = Matrix4.Identity();
-        // set the default up vector
-        Vector3 up = new Vector3(0, 1, 0); 
-        // set the look direction 
+        // set the default top vector
+        Vector3 top = new Vector3(0, 1, 0); 
+        // set the camera look direction  by lookat(view point) minus pos(camera position)
         Vector3 Z = Vector3.sub(lookat, pos).unit_vector(); 
-        // set the cross of up and z as x 
-        Vector3 X = Vector3.cross(up, Z).unit_vector(); 
-        // reset the up as Y by cross of x and z
-        Vector3 Y = Vector3.cross(Z, X); 
+        // set the right as X by cross of top and Z 
+        Vector3 X = Vector3.cross(top, Z).unit_vector(); 
+        // set the true top as Y by cross of X and Z
+        Vector3 Y = Vector3.cross(Z, X).unit_vector();
         
         // set the rotation for camera to look at point lookat 
         worldView.m[0] = X.x();
-        worldView.m[4] = X.y();
-        worldView.m[8] = X.z();
-        worldView.m[1] = Y.x();
+        worldView.m[1] = X.y();
+        worldView.m[2] = X.z();
+        
+        worldView.m[4] = Y.x();
         worldView.m[5] = Y.y();
-        worldView.m[9] = Y.z();
-        worldView.m[2] = -Z.x();
-        worldView.m[6] = -Z.y();
+        worldView.m[6] = Y.z();
+        
+        worldView.m[8] = -Z.x();
+        worldView.m[9] = -Z.y();
         worldView.m[10] = -Z.z();
         
         // Compute the translation in x, y, z coordinate
         worldView.m[3] = -Vector3.dot(X, pos);
         worldView.m[7] = -Vector3.dot(Y, pos);
         worldView.m[11] = Vector3.dot(Z, pos); 
-        
     }
 }

@@ -149,8 +149,23 @@ private static Vector3 boundaryIntersection(Vector3 boundaryEdgeStart, Vector3 b
 public float getDepth(float x, float y, Vector3[] vertex ) {
     // To - Do
     // You need to calculate the depth (z) in the triangle (vertex) based on the positions x and y. and return the z value;
+    Vector3 v0 = vertex[1].sub(vertex[0]);
+    Vector3 v1 = vertex[2].sub(vertex[0]);
+    Vector3 v2 = new Vector3((x - vertex[0].x), (y - vertex[0].y), 0);
 
-    return 0.0;
+    float d00 = Vector3.dot(v0, v0);
+    float d01 = Vector3.dot(v0, v1);
+    float d11 = Vector3.dot(v1, v1);
+    float d20 = Vector3.dot(v2, v0);
+    float d21 = Vector3.dot(v2, v1);
+
+    //compute the Barycentric Coordinates (a, b, c)
+    float d = d00 * d11 - d01 * d01;
+    float b = (d11 * d20 - d01 * d21) / d;
+    float c = (d00 * d21 - d01 * d20) / d;
+    float a = 1.0f - b - c;
+
+    return a * vertex[0].z + b * vertex[1].z + c * vertex[2].z;
 }
 
 float[] barycentric(Vector3 P, Vector4[] verts) {

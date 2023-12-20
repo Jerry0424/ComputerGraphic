@@ -74,28 +74,36 @@ public class GameObject {
             for (int j=0; j<3; j++) {
                 img_pos[j] = MVP.mult(triangle.verts[j].getVector4(1.0)).homogenized();
             }
-
-
             for (int j=0; j<img_pos.length; j++) {
                 img_pos[j] = new Vector3(map(img_pos[j].x, -1, 1, renderer_size.x, renderer_size.z), map(img_pos[j].y, -1, 1, renderer_size.y, renderer_size.w), img_pos[j].z);
             }
-
-            CGLine(img_pos[0].x, img_pos[0].y, img_pos[1].x, img_pos[1].y);
-            CGLine(img_pos[1].x, img_pos[1].y, img_pos[2].x, img_pos[2].y);
-            CGLine(img_pos[2].x, img_pos[2].y, img_pos[0].x, img_pos[0].y);
+            if(backCull(img_pos, cam_position)){
+              CGLine(img_pos[0].x, img_pos[0].y, img_pos[1].x, img_pos[1].y);
+              CGLine(img_pos[1].x, img_pos[1].y, img_pos[2].x, img_pos[2].y);
+              CGLine(img_pos[2].x, img_pos[2].y, img_pos[0].x, img_pos[0].y);
+            }
+            
         }
     }
+     boolean backCull(Vector3[] triangle, Vector3 cameraPos) {
+        Vector3 edge1 = Vector3.sub(triangle[1], triangle[0]).unit_vector();
+        Vector3 edge2 = Vector3.sub(triangle[2], triangle[0]).unit_vector();
+        Vector3 normal = Vector3.cross(edge1, edge2).unit_vector();
+        Vector3 toCamera = Vector3.sub(cameraPos, triangle[0]).unit_vector();
+        return Vector3.dot(normal, toCamera) < 0;
+    }
+
 
     String getGameObjectName() {
         return name;
     }
 
+
+   
     Matrix4 localToWorld() {
         // To - Do 
         // You need to calculate the model Matrix here.
-        
         return Matrix4.Trans(transform.position.mult(1)).mult(Matrix4.RotX(transform.rotation.x)).mult(Matrix4.RotY(transform.rotation.y)).mult(Matrix4.RotZ(transform.rotation.z)).mult(Matrix4.Scale(transform.scale));
-       
     }
     
     Matrix4 worldToLocal() {
