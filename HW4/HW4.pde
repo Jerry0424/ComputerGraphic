@@ -73,6 +73,47 @@ void cameraControl(){
     // You can write your own camera control function here.
     // Use setPositionOrientation(Vector3 position,Vector3 lookat) to modify the ViewMatrix.
     // Hint : Use keyboard event and mouse click event to change the position of the camera.
+    float moveSpeed = 0.1;
+    float rotateSpeed = 0.1;
+    
+    if (keyPressed) {
+        if (key == 'a') {
+            cam_position.x -= moveSpeed;
+            lookat.x -= moveSpeed;
+        }else if (key == 'd') {
+            cam_position.x += moveSpeed;
+            lookat.x += moveSpeed;
+        }else if (key == 'w') {
+            cam_position.y -= moveSpeed;
+            lookat.y -= moveSpeed;
+        }else if (key == 's') {
+            cam_position.y += moveSpeed;
+            lookat.y += moveSpeed;
+        }else if (key == 'q'){
+            cam_position.z += moveSpeed;
+            lookat.z += moveSpeed;
+        }else if (key == 'e'){
+            cam_position.z -= moveSpeed;
+            lookat.z -= moveSpeed;
+        }else if(keyCode == UP){
+            moveSpeed += 0.01;
+            rotateSpeed += 0.01;
+        }
+        else if(keyCode == DOWN){
+            moveSpeed -= 0.01;
+            rotateSpeed -= 0.01;
+        }
+        main_camera.setPositionOrientation(cam_position, lookat);
+    }
 
+    if (mousePressed) {
+        if (mouseButton == RIGHT){
+          lookat.x += (mouseX - pmouseX) * rotateSpeed;
+          lookat.y += (mouseY - pmouseY) * rotateSpeed;
+          cam_position.x += (mouseX - pmouseX) * rotateSpeed;
+          cam_position.y += (mouseY - pmouseY) * rotateSpeed;
+        }
+        main_camera.setPositionOrientation(cam_position, lookat);
+    }
 
 }
