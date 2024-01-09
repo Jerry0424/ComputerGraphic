@@ -60,13 +60,7 @@ public class PhongFragmentShader extends FragmentShader{
             ambient.z * albedo.z + diffuse.z * albedo.z + specular.z * albedo.z
         );
 
-        
-        result.x = Math.max(0.0, Math.min(1.0, result.x));
-        result.y = Math.max(0.0, Math.min(1.0, result.y));
-        result.z = Math.max(0.0, Math.min(1.0, result.z));
-
         return new Vector4(result.x, result.y, result.z, 1.0);
-        
     }
 }
 
