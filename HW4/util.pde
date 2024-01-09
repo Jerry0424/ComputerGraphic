@@ -201,13 +201,16 @@ float[] barycentric(Vector3 P, Vector4[] verts) {
     float beta = (a1 * c2 - c1* a2) / det;
     float gamma =  1 - alpha - beta;
     
-    // do the Perspective-Correct
-    alpha = (alpha / AW.w) * A.x + (beta / BW.w) * B.x + (gamma / CW.w) * C.x;
-    beta = (alpha / AW.w) * A.y + (beta / BW.w) * B.y + (gamma / CW.w) * C.y;
-    gamma = (alpha / AW.w) * A.z + (beta / BW.w) * B.z + (gamma / CW.w) * C.z;
+    //// do the Perspective-Correct
+    //alpha = (alpha / AW.w) * A.x + (beta / BW.w) * B.x + (gamma / CW.w) * C.x;
+    //beta = (alpha / AW.w) * A.y + (beta / BW.w) * B.y + (gamma / CW.w) * C.y;
+    //gamma = (alpha / AW.w) * A.z + (beta / BW.w) * B.z + (gamma / CW.w) * C.z;
 
-    float[] result={alpha, beta, gamma};
+    alpha /= (AW.w + alpha * (BW.w - AW.w) + beta * (CW.w - AW.w));
+    beta /= (AW.w + alpha * (BW.w - AW.w) + beta * (CW.w - AW.w));
+    gamma /= (AW.w + alpha * (BW.w - AW.w) + beta * (CW.w - AW.w));
     
+    float[] result={alpha, beta, gamma};
     return result;
 }
 

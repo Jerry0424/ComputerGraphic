@@ -36,9 +36,37 @@ public class PhongFragmentShader extends FragmentShader{
         // Please use these variables to calculate the result of Phong shading 
         // for that point and return it to GameObject for rendering
         
-       
+        // compute the lighting
+        Vector3 lightDirection = (light.transform.position.sub(w_position)).unit_vector();
+        Vector3 viewDirection = (cam.transform.position.sub(w_position)).unit_vector();
+        Vector3 normal = w_normal.unit_vector();
         
-        return new Vector4(0.0,0.0,0.0,1.0);
+        // compute ambient
+        Vector3 ambient = light.light_color.product(AMBIENT_LIGHT);
+        
+        // compute diffuse
+        float diff = Math.max(0.0, Vector3.dot(normal, lightDirection));
+        Vector3 diffuse = light.light_color.mult(diff).mult(kdksm.x);
+        
+        // compute reflection vector
+        Vector3 reflectDirection = normal.mult(Vector3.dot(normal, lightDirection)).mult(2).sub(lightDirection);
+        
+        //compute specualr
+        Vector3 specular = light.light_color.mult(kdksm.y).mult((float)Math.pow(Vector3.dot(reflectDirection, viewDirection),kdksm.z));
+        
+        Vector3 result = new Vector3(
+            ambient.x * albedo.x + diffuse.x * albedo.x + specular.x * albedo.x,
+            ambient.y * albedo.y + diffuse.y * albedo.y + specular.y * albedo.y,
+            ambient.z * albedo.z + diffuse.z * albedo.z + specular.z * albedo.z
+        );
+
+        
+        result.x = Math.max(0.0, Math.min(1.0, result.x));
+        result.y = Math.max(0.0, Math.min(1.0, result.y));
+        result.z = Math.max(0.0, Math.min(1.0, result.z));
+
+        return new Vector4(result.x, result.y, result.z, 1.0);
+        
     }
 }
 
