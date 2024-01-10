@@ -78,22 +78,41 @@ public class FlatMaterial extends Material{
 }
 
 public class GroundMaterial extends Material{
+  Vector3 Ka = new Vector3(0.3,0.3,0.3);
+    float Kd = 0.5;
+    float Ks = 0.5;
+    float m = 20;
     GroundMaterial(){
         shader =  new Shader(new GroundVertexShader(), new GroundFragmentShader());
     }
     Vector4[][] vertexShader(Triangle triangle,Matrix4 M){
         Matrix4 MVP = main_camera.Matrix().mult(M);
         Vector3[] position = triangle.verts;
+        Vector3[] normal = triangle.normal;
         
         // pass the uniform you need into the shader. (HW4)
         
-        Vector4[][] r = shader.vertex.main(new Object[]{position},new Object[]{MVP});
+        Vector4[][] r = shader.vertex.main(new Object[]{position, normal, albedo, new Vector3(Kd,Ks,m)},new Object[]{MVP, M});
         return r;
     }
     
     Vector4 fragmentShader(Vector3 position,Vector4[] varing){
-        return shader.fragment.main(new Object[]{position});
+        return shader.fragment.main(new Object[]{position, varing[0]});
     }
+    
+    
+    // test 
+    //Vector4[][] vertexShader(Triangle triangle,Matrix4 M){
+    //    Matrix4 MVP = main_camera.Matrix().mult(M);
+    //    Vector3[] position = triangle.verts;
+    //    Vector4[][] r = shader.vertex.main(new Object[]{position},new Object[]{MVP});
+    //    return r;
+    //}
+    
+    //Vector4 fragmentShader(Vector3 position,Vector4[] varing){
+    //    return shader.fragment.main(new Object[]{position,varing[0].xyz()});
+    //}
+    
 }
 
 public enum MaterialEnum{
