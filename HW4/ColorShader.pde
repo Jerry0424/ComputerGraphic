@@ -43,17 +43,17 @@ public class PhongFragmentShader extends FragmentShader{
         
         // compute ambient
         Vector3 ambient = light.light_color.product(AMBIENT_LIGHT);
+
+        // compute diffuse 
+        Vector3 diffuse = light.light_color.mult(Vector3.dot(normal, lightDirection)).mult(kdksm.x);
         
-        // compute diffuse
-        float diff = Math.max(0.0, Vector3.dot(normal, lightDirection));
-        Vector3 diffuse = light.light_color.mult(diff).mult(kdksm.x);
-        
-        // compute reflection vector
-        Vector3 reflectDirection = normal.mult(Vector3.dot(normal, lightDirection)).mult(2).sub(lightDirection);
+        // compute reflection vector: 2N* dot(N, L) - L
+        Vector3 reflectDirection = normal.mult(2).mult(Vector3.dot(normal, lightDirection)).sub(lightDirection);
         
         //compute specualr
         Vector3 specular = light.light_color.mult(kdksm.y).mult((float)Math.pow(Vector3.dot(reflectDirection, viewDirection),kdksm.z));
         
+        // compute the object color  
         Vector3 result = new Vector3(
             ambient.x * albedo.x + diffuse.x * albedo.x + specular.x * albedo.x,
             ambient.y * albedo.y + diffuse.y * albedo.y + specular.y * albedo.y,
@@ -67,25 +67,26 @@ public class PhongFragmentShader extends FragmentShader{
 
 
 public class FlatVertexShader extends VertexShader{
-    Vector4[][] main(Object[] attribute,Object[] uniform){
+   Vector4[][] main(Object[] attribute,Object[] uniform){
         Vector3[] aVertexPosition = (Vector3[])attribute[0];
         Matrix4 MVP = (Matrix4)uniform[0];
-        Vector4[] gl_Position = new Vector4[3];   
-        
-        // To - Do (HW4)
-        // Here you must complete Flat shading. 
-        // We have instantiated the relevant Material, and you may be missing some variables. 
-        // Please refer to the templates of Phong Material and Phong Shader to complete this part.
+        Matrix4 M = (Matrix4)uniform[1];
+        Vector4[] gl_Position = new Vector4[3];
+        Vector4[] w_position = new Vector4[3];
+        Vector4[] w_normal = new Vector4[3];
         
         
-        // Note: Here the first variable must return the position of the vertex. 
-        // Subsequent variables will be interpolated and passed to the fragment shader. The return value must be a Vector4.
+        Vector3 P = aVertexPosition[1].sub(aVertexPosition[0]);
+        Vector3 Q = aVertexPosition[2].sub(aVertexPosition[0]);
+        Vector3 normal = Vector3.cross(P, Q);
         
         for(int i=0;i<gl_Position.length;i++){
             gl_Position[i] = MVP.mult(aVertexPosition[i].getVector4(1.0));
+            w_position[i] = M.mult(aVertexPosition[i].getVector4(1.0));
+            w_normal[i] = M.mult(normal.getVector4(0.0));
         }
         
-        Vector4[][] result = {gl_Position};
+        Vector4[][] result = {gl_Position,w_position,w_normal};
         
         return result;
     }
@@ -94,6 +95,12 @@ public class FlatVertexShader extends VertexShader{
 public class FlatFragmentShader extends FragmentShader{
     Vector4 main(Object[] varying){
         Vector3 position = (Vector3)varying[0];
+        Vector3 w_position = (Vector3)varying[1];
+        Vector3 w_normal = (Vector3)varying[2];
+        Vector3 albedo = (Vector3) varying[3];
+        Vector3 kdksm = (Vector3) varying[4];
+        Light light = basic_light;
+        Camera cam = main_camera;
         // To - Do (HW4)
         // Here you must complete Flat shading. 
         // We have instantiated the relevant Material, and you may be missing some variables. 
@@ -103,7 +110,30 @@ public class FlatFragmentShader extends FragmentShader{
         // Subsequent variables will be received in order from the vertex shader. 
         // Additional variables needed will be passed by the material later.
         
-        return new Vector4(0.0,0.0,0.0,1.0);
+        Vector3 lightDirection = (light.transform.position.sub(w_position)).unit_vector();
+        Vector3 viewDirection = (cam.transform.position.sub(w_position)).unit_vector();
+        Vector3 normal = w_normal.unit_vector();
+        
+        // compute ambient
+        Vector3 ambient = light.light_color.product(AMBIENT_LIGHT);
+
+        // compute diffuse 
+        Vector3 diffuse = light.light_color.mult(Vector3.dot(normal, lightDirection)).mult(kdksm.x);
+        
+        // compute reflection vector: 2N* dot(N, L) - L
+        Vector3 reflectDirection = normal.mult(2).mult(Vector3.dot(normal, lightDirection)).sub(lightDirection);
+        
+        //compute specualr
+        Vector3 specular = light.light_color.mult(kdksm.y).mult((float)Math.pow(Vector3.dot(reflectDirection, viewDirection),kdksm.z));
+        
+        // compute the object color  
+        Vector3 result = new Vector3(
+            ambient.x * albedo.x + diffuse.x * albedo.x + specular.x * albedo.x,
+            ambient.y * albedo.y + diffuse.y * albedo.y + specular.y * albedo.y,
+            ambient.z * albedo.z + diffuse.z * albedo.z + specular.z * albedo.z
+        );
+
+        return new Vector4(result.x, result.y, result.z, 1.0);
     }
 }
 
